@@ -22,7 +22,7 @@
         </button>
       </div>
     </header>
-    <div class="main-content">
+    <div class="mainDiv" v-if="showProduct">
       <div class="sortDiv">
         <div class="filteringDiv">
           <p style="font-weight: bold">Sort By:</p>
@@ -54,15 +54,13 @@
           </label>
         </div>
       </div>
-      <main>
-        <product-list
-          :products="sortedProducts"
-          @addProduct="addToCart"
-          v-if="showProduct"
-        ></product-list>
-
-        <checkout :cart="cart" @remove-item="deleteFromCart" v-else></checkout>
-      </main>
+      <product-list
+        :products="sortedProducts"
+        @addProduct="addToCart"
+      ></product-list>
+    </div>
+    <div class="cartMainDiv" v-else>
+      <checkout :cart="cart" @remove-item="deleteFromCart"> </checkout>
     </div>
   </div>
 </template>

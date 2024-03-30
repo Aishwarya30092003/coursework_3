@@ -1,44 +1,35 @@
 <template>
-  <div>
-    <div class="productMainDiv">
-      <div class="products">
-        <div
-          class="productDetails"
-          v-for="product in products"
-          :key="product.id"
+  <div class="productMainDiv">
+    <div class="products">
+      <div class="productDetails" v-for="product in products" :key="product.id">
+        <h2>{{ product.title }}</h2>
+        <figure>
+          <img v-bind:src="product.image" style="height: 100px; width: 100px" />
+        </figure>
+        <p v-html="product.description"></p>
+        <p>Price: {{ product.price }}</p>
+        <p>Available stock:{{ product.availableInventory }}</p>
+        <button
+          class="addToCart"
+          @click="add(product)"
+          v-if="canAddToCart(product)"
         >
-          <h2>{{ product.title }}</h2>
-          <figure>
-            <img
-              v-bind:src="product.image"
-              style="height: 100px; width: 100px"
-            />
-          </figure>
-          <p v-html="product.description"></p>
-          <p>Price: {{ product.price }}</p>
-          <p>Available stock:{{ product.availableInventory }}</p>
-          <button
-            class="addToCart"
-            @click="add(product)"
-            v-if="canAddToCart(product)"
-          >
-            Add To Cart
-          </button>
-          <button
-            style="opacity: 0.5"
-            class="addToCart"
-            disabled="disabled"
-            v-else
-          >
-            Add To Cart
-          </button>
-          <!-- Messages for inventory status -->
-          <span v-if="product.availableInventory === 0">All Out!</span>
-          <span v-else-if="product.availableInventory - cartCount(product.id)">
-            Only {{ product.availableInventory }} left!
-          </span>
-          <span v-else>Buy Now!!</span>
-        </div>
+          Add To Cart
+        </button>
+        <button
+          style="opacity: 0.5"
+          class="addToCart"
+          disabled="disabled"
+          v-else
+        >
+          Add To Cart
+        </button>
+        <!-- Messages for inventory status -->
+        <span v-if="product.availableInventory === 0">All Out!</span>
+        <span v-else-if="product.availableInventory - cartCount(product.id)">
+          Only {{ product.availableInventory }} left!
+        </span>
+        <span v-else>Buy Now!!</span>
       </div>
     </div>
   </div>
