@@ -34,7 +34,7 @@
           </button>
           <!-- Messages for inventory status -->
           <span v-if="product.availableInventory === 0">All Out!</span>
-          <span v-else-if="product.availableInventory < 10">
+          <span v-else-if="product.availableInventory - cartCount(product.id)">
             Only {{ product.availableInventory }} left!
           </span>
           <span v-else>Buy Now!!</span>
@@ -72,6 +72,14 @@ export default {
         }
       }
       return count;
+    },
+    filterProducts() {
+      const query = this.searchQuery.toLowerCase();
+      this.filteredProducts = this.sortedProducts.filter(
+        (product) =>
+          product.title.toLowerCase().includes(query) ||
+          product.location.toLowerCase().includes(query)
+      );
     },
   },
 };

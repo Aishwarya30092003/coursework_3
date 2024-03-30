@@ -1,10 +1,15 @@
 <template>
-  <div>
-    <h2>Checkout</h2>
-    <h3 Added products></h3>
-    <div v-for="product in cart" :key="product.id">
-      {{ product.id }}
-      <button @click="removeItem(product.id)">remove</button>
+  <div class="cartMainDiv">
+    <div class="cart-items">
+      <div v-for="product in cart" :key="product.id" class="cartProducts">
+        <figure>
+          <img v-bind:src="product.image" height="100px" width="100px" />
+        </figure>
+        <h2 v-text="product.title"></h2>
+        <p v-text="product.description"></p>
+        <p>Fees: {{ product.Fees }}</p>
+        <button class="removeButton" @click="removeItem(product.id)">remove</button>
+      </div>
     </div>
     <div>
       <div class="order-info" style="color: white; margin-top: 20px">

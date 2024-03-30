@@ -5,6 +5,14 @@
         <div class="logo">
           <h1>{{ sitename }}</h1>
         </div>
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Search..."
+            v-model="searchQuery"
+            @input="filterProducts"
+          />
+        </div>
         <button
           class="fas fa-shopping-cart"
           @click="showCheckout"
@@ -14,6 +22,33 @@
         </button>
       </div>
     </header>
+    <div class="sortDiv">
+      <div class="filteringDiv">
+        <p style="font-weight: bold">Sort By:</p>
+        <br />
+        <!-- Radio buttons for sorting options -->
+        <label>
+          <input type="radio" value="fees" v-model="filter" />Fees
+          <br />
+          <input type="radio" value="subject" v-model="filter" />Subject
+          <br />
+          <input type="radio" value="location" v-model="filter" />Location
+          <br />
+          <input type="radio" value="slots" v-model="filter" />Slots
+        </label>
+        <label>
+          <p style="font-weight: bold">Sort Order:</p>
+          <!-- Radio buttons for sorting order -->
+          <input type="radio" value="ascending" v-model="sortOrder" />Ascending
+          <br />
+          <input
+            type="radio"
+            value="descending"
+            v-model="sortOrder"
+          />Descending
+        </label>
+      </div>
+    </div>
     <main>
       <product-list
         :products="products"
@@ -42,6 +77,7 @@ export default {
       showProduct: true,
       cart: [],
       products: [], // Ensure products is properly initialized
+      filter: "", sortOrder: "ascending", searchQuery: ""
     };
   },
 
@@ -62,7 +98,9 @@ export default {
     },
     addToCart(product) {
       console.log("addProduct event received by the root component.");
+      product.availableInventory--;
       this.cart.push(product);
+      
     },
     deleteFromCart(id) {
       // Find the index of the product with the given ID
@@ -73,12 +111,63 @@ export default {
         this.cart.splice(index, 1);
       }
     },
+    filterProducts() {
+      const query = this.searchQuery.toLowerCase();
+      this.filteredProducts = this.sortedProducts.filter(
+        (product) =>
+          product.title.toLowerCase().includes(query) ||
+          product.location.toLowerCase().includes(query)
+      );
+    },
   },
   computed: {
     cartItemCount: function () {
       // Calculate the total number of items in the cart
-      return this.cart.length || "";
+      return this.cart.length;
     },
+  },
+  sortedProducts() {
+    // Clone the products array to avoid modifying the original data
+    let productsArray = this.products.slice(0);
+    // Filter products based on search query
+    productsArray = productsArray.filter(
+      (product) =>
+        product.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        product.location.toLowerCase().includes(this.searchQuery.toLowerCase())
+    );
+    // Sort products based on selected filter and sortOrder
+    switch (this.filter) {
+      case "fees":
+        productsArray.sort((a, b) =>
+          this.sortOrder === "ascending" ? a.Fees - b.Fees : b.Fees - a.Fees
+        );
+        break;
+      case "subject":
+        productsArray.sort((a, b) =>
+          this.sortOrder === "ascending"
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title)
+        );
+        break;
+      case "location":
+        productsArray.sort((a, b) =>
+          this.sortOrder === "ascending"
+            ? a.location.localeCompare(b.location)
+            : b.location.localeCompare(a.location)
+        );
+        break;
+      case "slots":
+        productsArray.sort((a, b) =>
+          this.sortOrder === "ascending"
+            ? a.availableInventory - b.availableInventory
+            : b.availableInventory - a.availableInventory
+        );
+        break;
+      default:
+        break;
+    }
+
+    return productsArray;
   },
 };
 </script>
