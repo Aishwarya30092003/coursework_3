@@ -8,16 +8,20 @@
         <button
           class="fas fa-shopping-cart"
           @click="showCheckout"
-          :disabled="cartItemCount < 1"
+          :disabled="cartItemCount === 0"
         >
           {{ this.cart.length }}
         </button>
       </div>
     </header>
     <main>
-      <product-list :products="products" @addProduct="addToCart"></product-list>
+      <product-list
+        :products="products"
+        @addProduct="addToCart"
+        v-if="showProduct"
+      ></product-list>
 
-      <checkout :cart="cart"></checkout>
+      <checkout :cart="cart" @remove-item="deleteFromCart" v-else></checkout>
     </main>
   </div>
 </template>
@@ -35,6 +39,7 @@ export default {
   data() {
     return {
       sitename: "After School Hub",
+      showProduct: true,
       cart: [],
       products: [], // Ensure products is properly initialized
     };
@@ -51,10 +56,22 @@ export default {
     });
   },
   methods: {
-    showCheckout() {},
+    showCheckout: function () {
+      // Toggle between displaying products and the shopping cart
+      this.showProduct = !this.showProduct;
+    },
     addToCart(product) {
       console.log("addProduct event received by the root component.");
       this.cart.push(product);
+    },
+    deleteFromCart(id) {
+      // Find the index of the product with the given ID
+      const index = this.cart.findIndex((product) => product.id === id);
+
+      // If the product is found, remove it from the cart
+      if (index !== -1) {
+        this.cart.splice(index, 1);
+      }
     },
   },
   computed: {

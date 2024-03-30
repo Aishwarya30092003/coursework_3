@@ -2,9 +2,9 @@
   <div>
     <h2>Checkout</h2>
     <h3 Added products></h3>
-    <div v-for="(product, index) in cart" :key="product.id">
+    <div v-for="product in cart" :key="product.id">
       {{ product.id }}
-      <button @click="removeItem(index)">remove</button>
+      <button @click="removeItem(product.id)">remove</button>
     </div>
     <div>
       <strong>Name</strong>
@@ -19,7 +19,7 @@
 <script>
 export default {
   name: "Form-component",
-  props: ['cart'],
+  props: ["cart", "products"],
   data() {
     return {
       name: "",
@@ -29,6 +29,8 @@ export default {
 
   methods: {
     removeItem(index) {
+      console.log("Trying to remove product");
+      console.log("Index: ", index);
       this.$emit("remove-item", index);
     },
     submitForm() {
